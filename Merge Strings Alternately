@@ -1,0 +1,32 @@
+char * mergeAlternately(char * word1, char * word2) {
+    if (word1 == NULL || word2 == NULL) {
+        return NULL;
+    }
+
+    int a = strlen(word1);
+    int b = strlen(word2);
+    int totalLength = a + b;
+
+    char *c = (char*)malloc(sizeof(char) * (totalLength + 1)); 
+    if (c == NULL) {
+        return NULL;
+    }
+
+    int i = 0, index = 0;
+
+    while (index < totalLength) {
+        if (i < a && word1[i]!='\0') 
+        {
+            c[index++] = word1[i];
+        }
+        if (i < b && word2[i]!='\0') 
+        {
+            c[index++] = word2[i];
+        }
+        i++;
+    }
+
+    c[index] = '\0';
+
+    return c;
+}
