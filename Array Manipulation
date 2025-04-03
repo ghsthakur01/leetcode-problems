@@ -1,0 +1,45 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+#define MAX_N 10000000  // Large array limit
+
+long long maxArrayValue(int n, int queries[][3], int m) {
+    // Create a difference array of size (n+2) initialized to zero
+    long long *arr = (long long*)calloc(n + 2, sizeof(long long));
+
+    // Apply difference array technique
+    for (int i = 0; i < m; i++) {
+        int a = queries[i][0];
+        int b = queries[i][1];
+        int k = queries[i][2];
+
+        arr[a] += k;     // Add k at start index
+        arr[b + 1] -= k; // Subtract k at index (b+1)
+    }
+
+    // Compute prefix sum and track the maximum value
+    long long maxVal = 0, sum = 0;
+    for (int i = 1; i <= n; i++) {
+        sum += arr[i];  // Compute actual values
+        if (sum > maxVal) {
+            maxVal = sum;
+        }
+    }
+
+    free(arr);  // Free allocated memory
+    return maxVal;
+}
+
+int main() {
+    int n, m;
+    scanf("%d %d", &n, &m);  // Read size of array and number of queries
+
+    int queries[m][3];  // Query storage
+    for (int i = 0; i < m; i++) {
+        scanf("%d %d %d", &queries[i][0], &queries[i][1], &queries[i][2]);
+    }
+
+    printf("%lld\n", maxArrayValue(n, queries, m));
+
+    return 0;
+}
