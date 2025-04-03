@@ -1,0 +1,80 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+// Define a hash table structure
+typedef struct {
+    char str[21]; // Assuming max length of string is 20
+    int count;
+} HashEntry;
+
+#define HASH_SIZE 10000  // Define a reasonable hash size
+
+HashEntry hashTable[HASH_SIZE];
+
+// Hash function for strings (simple polynomial rolling hash)
+unsigned int hashFunction(const char *str) {
+    unsigned int hash = 0;
+    while (*str) {
+        hash = (hash * 31 + (*str)) % HASH_SIZE;
+        str++;
+    }
+    return hash;
+}
+
+// Function to insert or update the hash table
+void insertOrUpdate(const char *str) {
+    unsigned int index = hashFunction(str);
+    
+    // Linear probing for collision handling
+    while (hashTable[index].count != 0) {
+        if (strcmp(hashTable[index].str, str) == 0) {
+            hashTable[index].count++;
+            return;
+        }
+        index = (index + 1) % HASH_SIZE;
+    }
+    
+    // Insert new element
+    strcpy(hashTable[index].str, str);
+    hashTable[index].count = 1;
+}
+
+// Function to get the count of a string
+int getCount(const char *str) {
+    unsigned int index = hashFunction(str);
+    
+    while (hashTable[index].count != 0) {
+        if (strcmp(hashTable[index].str, str) == 0) {
+            return hashTable[index].count;
+        }
+        index = (index + 1) % HASH_SIZE;
+    }
+    
+    return 0;  // Not found
+}
+
+int main() {
+    int n, q;
+    char str[21];  // Assuming max length of string is 20
+    
+    // Read number of input strings
+    scanf("%d", &n);
+    
+    // Insert strings into hash table
+    for (int i = 0; i < n; i++) {
+        scanf("%s", str);
+        insertOrUpdate(str);
+    }
+    
+    // Read number of queries
+    scanf("%d", &q);
+    
+    // Process each query
+    for (int i = 0; i < q; i++) {
+        scanf("%s", str);
+        printf("%d\n", getCount(str));
+    }
+    
+    return 0;
+}
